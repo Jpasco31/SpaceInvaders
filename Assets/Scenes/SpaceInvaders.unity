@@ -225,7 +225,7 @@ GameObject:
   m_Component:
   - component: {fileID: 735031132}
   - component: {fileID: 735031131}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Invaders
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -249,10 +249,44 @@ MonoBehaviour:
   - {fileID: 2046436150205613829, guid: 1c8609d340f414ddba9b0c2ce7d53d53, type: 3}
   - {fileID: 2606243227326340038, guid: cb5317bb1f3bc4573ae7aa3c31117bb8, type: 3}
   - {fileID: 2606243227326340038, guid: cb5317bb1f3bc4573ae7aa3c31117bb8, type: 3}
-  - {fileID: 8329188199617950498, guid: dc0847c4b097d4633b83608a67e2b864, type: 3}
+  - {fileID: 5075777280019476534, guid: 69a9dde4d3914454f8e2334ced5e7668, type: 3}
   rows: 5
   columns: 11
-  baseSpeed: 1
+  baseSpeed:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0.5
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.69827497
+      value: 3.6762714
+      inSlope: 8.215441
+      outSlope: 8.215441
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 8
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  missilePrefab: {fileID: 169110580868875701, guid: 9a8ae2d09430c44418d91958f6bf33a3, type: 3}
+  missileAttackRate: 1
 --- !u!4 &735031132
 Transform:
   m_ObjectHideFlags: 0
@@ -279,8 +313,8 @@ GameObject:
   - component: {fileID: 1247131988}
   - component: {fileID: 1247131987}
   - component: {fileID: 1247131986}
-  m_Layer: 0
-  m_Name: MysteryAlien
+  m_Layer: 7
+  m_Name: MysteryShip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -408,7 +442,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1433589459}
   - component: {fileID: 1433589458}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Boundary (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -485,7 +519,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1558162626}
   - component: {fileID: 1558162625}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Boundary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -563,8 +597,9 @@ GameObject:
   - component: {fileID: 1857843250}
   - component: {fileID: 1857843249}
   - component: {fileID: 1857843248}
-  m_Layer: 0
-  m_Name: Spaceship
+  - component: {fileID: 1857843253}
+  m_Layer: 6
+  m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -682,6 +717,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1857843253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857843247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e530e81067c24bfbb458a6c29ed92ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  baseSpeed: 5.5
+  bulletPrefab: {fileID: 8090207683319671213, guid: c25e265b6f35d45e988f1dbd077b71c0, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -8,6 +8,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2940372652339919415, guid: 70340dfebb4864f7a93a5c418da12fb4, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5784084719821776909, guid: 70340dfebb4864f7a93a5c418da12fb4, type: 3}
       propertyPath: m_Name
       value: 'Invader_01 '
