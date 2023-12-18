@@ -18,6 +18,7 @@ public class MysteryShip : Invader
     private int maxHit = 2;
     private bool hasAnimated = false;
 
+    private bool spawned;
 
 
     private new void Start()
@@ -86,7 +87,7 @@ public class MysteryShip : Invader
         }
     }
     
-    private void OnTriggerEnter2D(Collider2D other)
+    private new void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Laser"))
         {
@@ -96,8 +97,8 @@ public class MysteryShip : Invader
             // Check if the required number of hits is reached
             if (hitCount >= maxHit)
             {
-                // Call the base class OnTriggerEnter2D method
-                base.OnTriggerEnter2D(other);
+                gameObject.SetActive(false);
+                GameManager.Instance.OnMysteryShipKilled(this);
             }
         }
     }

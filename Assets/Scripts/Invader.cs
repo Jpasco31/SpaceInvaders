@@ -6,16 +6,17 @@ using UnityEngine;
 
 public class Invader : MonoBehaviour
 {
-    public Sprite[] animationSprites;
-    public float animationTime = 1.0f;
-    private SpriteRenderer _spriteRenderer;
-    private int _animationFrame;
-    public System.Action killed;
-    
+    public Sprite[] animationSprites = new Sprite[0];
+    public float animationTime = 1f;
+    public int score = 10;
+
+    private SpriteRenderer spriteRenderer;
+    private int animationFrame;
     
     private void Awake()
     {
-        _spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.sprite = animationSprites[0];
     }
 
     public void Start()
@@ -25,28 +26,22 @@ public class Invader : MonoBehaviour
 
     public void AnimateSprite()
     {
-        _animationFrame++;
+        animationFrame++;
 
-        if (_animationFrame >= this.animationSprites.Length)
-        {
-            _animationFrame = 0;
+        // Loop back to the start if the animation frame exceeds the length
+        if (animationFrame >= animationSprites.Length) {
+            animationFrame = 0;
         }
 
-        _spriteRenderer.sprite = this.animationSprites[_animationFrame];
+        spriteRenderer.sprite = animationSprites[animationFrame];
     }
 
-    public void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Laser"))
-        {
-            // Check if the 'killed' action is assigned before invoking it
-            if (killed != null)
-            {
-                killed.Invoke();
-            }
-
-            // Deactivate the GameObject
-            gameObject.SetActive(false);
+        if (other.gameObject.layer == LayerMask.NameToLayer("Laser")) {
+            GameManager.Instance.OnInvaderKilled(this);
+        } else if (other.gameObject.layer == LayerMask.NameToLayer("Boundary")) {
+            GameManager.Instance.OnBoundaryReached();
         }
     }
 }
