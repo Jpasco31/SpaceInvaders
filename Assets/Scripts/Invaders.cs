@@ -18,6 +18,9 @@ public class Invaders : MonoBehaviour
     public int totalInvaders => this.rows * this.columns;
     public float percentKilled => (float) this.amountKilled / (float) this.totalInvaders;
     
+    public int score = 10;
+
+    
     private Vector3 _direction = Vector2.right;
     private void Awake()
     {

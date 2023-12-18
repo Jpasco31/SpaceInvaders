@@ -287,6 +287,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   missilePrefab: {fileID: 169110580868875701, guid: 9a8ae2d09430c44418d91958f6bf33a3, type: 3}
   missileAttackRate: 1
+  score: 10
 --- !u!4 &735031132
 Transform:
   m_ObjectHideFlags: 0
@@ -445,10 +446,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e57a7f13e9897461380f7c5ef7763c39, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animationSprites: []
+  animationSprites:
+  - {fileID: 21300000, guid: a696aedc20f96ca42be97fda786a93e3, type: 3}
+  - {fileID: 21300000, guid: 2da3afa9b3caa7741be2ecab49e750e0, type: 3}
   animationTime: 1
   baseSpeed: 3
-  cycleTime: 30
+  score: 100
   missilePrefab: {fileID: 169110580868875701, guid: 9a8ae2d09430c44418d91958f6bf33a3, type: 3}
   missileAttackRate: 1
 --- !u!1 &1433589457

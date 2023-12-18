@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Search;
 using UnityEngine;
 
 public class Invader : MonoBehaviour
@@ -11,17 +12,18 @@ public class Invader : MonoBehaviour
     private int _animationFrame;
     public System.Action killed;
     
+    
     private void Awake()
     {
         _spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void Start()
+    public void Start()
     {
         InvokeRepeating(nameof (AnimateSprite), this.animationTime, this.animationTime);
     }
 
-    private void AnimateSprite()
+    public void AnimateSprite()
     {
         _animationFrame++;
 
@@ -33,7 +35,7 @@ public class Invader : MonoBehaviour
         _spriteRenderer.sprite = this.animationSprites[_animationFrame];
     }
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Laser"))
         {

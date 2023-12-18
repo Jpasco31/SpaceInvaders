@@ -5,8 +5,7 @@ using UnityEngine;
 public class MysteryShip : Invader
 {
     public float baseSpeed = 3f;
-    public float cycleTime = 30f;
-    // public int score = 300;
+    public int score = 100;
 
     private Vector2 leftDestination;
     private Vector2 rightDestination;
@@ -14,8 +13,14 @@ public class MysteryShip : Invader
     private Vector3 _direction = Vector2.right;
     public Projectile missilePrefab;
     public float missileAttackRate = 0.7f;
+    
+    private int hitCount = 0;
+    private int maxHit = 2;
+    private bool hasAnimated = false;
 
-    private void Start()
+
+
+    private new void Start()
     {
         // Transform the viewport to world coordinates so we can set the mystery
         // ship's destination points
@@ -30,12 +35,17 @@ public class MysteryShip : Invader
         if (gameObject.activeSelf)
         {
             InvokeRepeating(nameof(MissileAttack), this.missileAttackRate, this.missileAttackRate);
-        } else
+        }
+        else
         {
             OnDisable();
         }
-
-        
+    }
+    
+    private void OnDisable()
+    {
+        // Cancel the scheduled invocations when the GameObject becomes inactive
+        CancelInvoke(nameof(MissileAttack));
     }
 
     private void Update()
@@ -59,19 +69,36 @@ public class MysteryShip : Invader
             // Change direction to right
             _direction = Vector3.right;
         }
+        
+        if (hitCount == 1 && !hasAnimated)
+        {
+            base.AnimateSprite();
+            hasAnimated = true;
+        }
     }
-    
-    private void OnDisable()
-    {
-        // Cancel the scheduled invocations when the GameObject becomes inactive
-        CancelInvoke(nameof(MissileAttack));
-    }
+
     
     private void MissileAttack()
     {
         if (Random.value < missileAttackRate)
         {
             Instantiate(this.missilePrefab, this.transform.position, Quaternion.identity);
+        }
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Laser"))
+        {
+            // Increment the hit count
+            hitCount++;
+
+            // Check if the required number of hits is reached
+            if (hitCount >= maxHit)
+            {
+                // Call the base class OnTriggerEnter2D method
+                base.OnTriggerEnter2D(other);
+            }
         }
     }
 }
