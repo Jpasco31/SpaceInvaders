@@ -17,7 +17,7 @@ public class Projectile : MonoBehaviour
         collider = GetComponent<BoxCollider2D>();
     }
 
-    private void Update()
+    public void Update()
     {
         transform.position += baseSpeed * Time.deltaTime * direction;
     }

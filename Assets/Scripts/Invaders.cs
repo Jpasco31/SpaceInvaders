@@ -22,12 +22,24 @@ public class Invaders : MonoBehaviour
     public Projectile missilePrefab;
     public float missileSpawnRate = 1f;
     
+    private bool gameStarted = false;
+
     private void Awake()
     {
         initialPosition = transform.position;
-
-        CreateInvaderGrid();
     }
+    
+    
+    public void StartInvaders()
+    {
+        if (gameStarted)
+            return;
+
+        gameStarted = true;
+        CreateInvaderGrid();
+        InvokeRepeating(nameof(MissileAttack), missileSpawnRate, missileSpawnRate);
+    }
+
 
     private void CreateInvaderGrid()
     {

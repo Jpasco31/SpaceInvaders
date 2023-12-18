@@ -31,22 +31,6 @@ public class MysteryShip : Invader
         // Offset each destination by 1 unit so the ship is fully out of sight
         leftDestination = new Vector2(leftEdge.x - 1f, transform.position.y);
         rightDestination = new Vector2(rightEdge.x + 1f, transform.position.y);
-
-        // Check if the GameObject is active before starting the repeating invoke
-        if (gameObject.activeSelf)
-        {
-            InvokeRepeating(nameof(MissileAttack), this.missileAttackRate, this.missileAttackRate);
-        }
-        else
-        {
-            OnDisable();
-        }
-    }
-    
-    private void OnDisable()
-    {
-        // Cancel the scheduled invocations when the GameObject becomes inactive
-        CancelInvoke(nameof(MissileAttack));
     }
 
     private void Update()
@@ -76,6 +60,17 @@ public class MysteryShip : Invader
             base.AnimateSprite();
             hasAnimated = true;
         }
+    }
+    
+    private void OnEnable()
+    {
+        InvokeRepeating(nameof(MissileAttack), missileAttackRate, missileAttackRate);
+    }
+    
+    private void OnDisable()
+    {
+        // Cancel the scheduled invocations when the GameObject becomes inactive
+        CancelInvoke(nameof(MissileAttack));
     }
 
     

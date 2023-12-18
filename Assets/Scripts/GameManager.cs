@@ -4,7 +4,8 @@ using UnityEngine.UI;
 public sealed class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-
+    
+    [SerializeField] private GameObject gameStartUI;
     [SerializeField] private GameObject gameOverUI;
     [SerializeField] private Text scoreText;
     [SerializeField] private Text livesText;
@@ -13,13 +14,14 @@ public sealed class GameManager : MonoBehaviour
     private Player player;
     private Invaders invaders;
     private MysteryShip mysteryShip;
+    private int currentRound;
     
     private int score;
     private int lives;
 
     public int Score => score;
     public int Lives => lives;
-
+    
     private void Awake()
     {
         if (Instance != null) {
@@ -29,38 +31,86 @@ public sealed class GameManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
-
+    
+    // Function to spawn stars in the background
+  
     private void Start()
     {
-        player = FindObjectOfType<Player>();
-        invaders = FindObjectOfType<Invaders>();
-        mysteryShip = FindObjectOfType<MysteryShip>();
+        // Show the game start UI initially
+        gameStartUI.SetActive(true);
+        gameOverUI.SetActive(false);
+
+        // You may want to hide other UI elements here if needed
+        finalScoreText.gameObject.SetActive(false);
+        livesText.gameObject.SetActive(false);
+        scoreText.gameObject.SetActive(false);
+    }
+    
+    // Add a method to start the game
+    private void StartGame()
+    {
+        // Hide the game start UI and show the necessary game UI elements
+        gameStartUI.SetActive(false);
+        finalScoreText.gameObject.SetActive(false);
+        livesText.gameObject.SetActive(true);
+        scoreText.gameObject.SetActive(true);
         
+        invaders.StartInvaders();
         NewGame();
     }
 
     private void Update()
     {
-        if (lives <= 0 && Input.GetKeyDown(KeyCode.Return)) {
-            NewGame();
+        player = FindObjectOfType<Player>();
+        invaders = FindObjectOfType<Invaders>();
+        mysteryShip = FindObjectOfType<MysteryShip>();
+        
+        if (lives <= 0 && Input.GetKeyDown(KeyCode.Return))
+        {
+            RestartGame();
+        }
+
+        // Check for Enter key press to start the game
+        if (!gameStartUI.activeSelf && Input.GetKeyDown(KeyCode.Return))
+        {
+            StartGame();
         }
     }
 
     private void NewGame()
     {
+        gameStartUI.SetActive(false);
         gameOverUI.SetActive(false);
-
+        finalScoreText.gameObject.SetActive(false);
+        livesText.gameObject.SetActive(true);
+        scoreText.gameObject.SetActive(true);
         SetScore(0);
         SetLives(3);
+        currentRound = 0;
         NewRound();
     }
 
     private void NewRound()
     {
+        currentRound++;
         invaders.ResetInvaders();
         invaders.gameObject.SetActive(true);
-        
         Respawn();
+
+        if (currentRound > 1)
+        {
+            SetScore(score + 200);
+        }
+
+        // Spawn the mystery ship only on the second round
+        if (currentRound > 1)
+        {
+            mysteryShip.gameObject.SetActive(true);
+        }
+        else
+        {
+            mysteryShip.gameObject.SetActive(false);
+        }
     }
 
     private void Respawn()
@@ -73,7 +123,12 @@ public sealed class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        finalScoreText.text = "SCORE\n" + score.ToString().PadLeft(4, '0');
+        livesText.gameObject.SetActive(false);
+        scoreText.gameObject.SetActive(false);
+        gameStartUI.SetActive(false);
         gameOverUI.SetActive(true);
+        finalScoreText.gameObject.SetActive(true);
         invaders.gameObject.SetActive(false);
         mysteryShip.gameObject.SetActive(false);
     
@@ -133,5 +188,11 @@ public sealed class GameManager : MonoBehaviour
         {
             GameOver();
         }
+    }
+    
+    public void RestartGame()
+    {
+        // Implement any additional restart logic here
+        NewGame();
     }
 }
