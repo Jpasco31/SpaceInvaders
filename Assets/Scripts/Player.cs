@@ -13,6 +13,11 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
+        Vector3 leftEdge = Camera.main.ViewportToWorldPoint(Vector3.zero);
+        Vector3 rightEdge = Camera.main.ViewportToWorldPoint(Vector3.right);
+        
+        float padding = 1f; // Adjust this value for the desired padding
+
         if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
         {
             this.transform.position += Vector3.left * (this.baseSpeed * Time.deltaTime);
@@ -20,6 +25,10 @@ public class Player : MonoBehaviour
         {
             this.transform.position += Vector3.right * (this.baseSpeed * Time.deltaTime);
         }
+        
+        // Clamp the position within the screen boundaries with padding
+        float clampedX = Mathf.Clamp(transform.position.x, leftEdge.x + padding, rightEdge.x - padding);
+        transform.position = new Vector3(clampedX, transform.position.y, transform.position.z);
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
