@@ -10,20 +10,41 @@ using UnityEngine.Serialization;
 [RequireComponent(typeof(BoxCollider2D))]
 public class Player : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed = 6f;
     public Projectile laserPrefab;
+    
+    public bool _powerUpRapidShot;
+    private int _rapidShotBulletCount = 0;
+    private int _maxRapidShotBulletCount = 10;
+    private bool _laserActive;
 
-    private Projectile laser;
+    private void Update()
+    {
+        // Check if the player is alive before handling input
+        if (GameManager.Instance.gameStarted)
+        {
+            Shoot();
+        }
 
-     private void Update()
+        if (GameManager.Instance.gameStarted == false)
+        {
+            _powerUpRapidShot = false;
+        }
+        
+        HandleMovementInput();
+    }
+
+    private void HandleMovementInput()
     {
         Vector3 position = transform.position;
 
         // Update the position of the player based on the input
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow)) {
+        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
+        {
             position.x -= speed * Time.deltaTime;
         }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)) {
+        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
+        {
             position.x += speed * Time.deltaTime;
         }
 
@@ -34,19 +55,60 @@ public class Player : MonoBehaviour
 
         // Set the new position
         transform.position = position;
+    }
 
-        // Only one laser can be active at a given time so first check that
-        // there is not already an active laser
-        if (laser == null && (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))) {
-            laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
+    private void Shoot()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
+        {
+            FireLaser();
         }
+
+    }
+
+    private void FireLaser()
+    {
+        if (!_laserActive && !_powerUpRapidShot)
+        {
+            Projectile laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
+            laser.destroyed += LaserDestroyed;
+            _laserActive = true;
+            _rapidShotBulletCount++;
+        }
+        else if (_powerUpRapidShot)
+        {
+            Projectile laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
+            _rapidShotBulletCount++;
+        }
+    }
+    
+    private void LaserDestroyed()
+    {
+        _laserActive = false;
     }
      
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Missile") ||
-            other.gameObject.layer == LayerMask.NameToLayer("Invader")) {
+            other.gameObject.layer == LayerMask.NameToLayer("Invader"))
+        {
             GameManager.Instance.OnPlayerKilled(this);
         }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("PowerUpRapidShot"))
+        {
+            _powerUpRapidShot = true;
+            StartCoroutine(RapidShotCounter());
+        }
+    }
+    
+    private IEnumerator RapidShotCounter()
+    {
+        while (_rapidShotBulletCount < _maxRapidShotBulletCount)
+        {
+            yield return null;
+        }
+
+        _powerUpRapidShot = false;
+        _rapidShotBulletCount = 0;
     }
 }

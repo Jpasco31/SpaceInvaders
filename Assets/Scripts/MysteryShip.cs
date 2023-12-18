@@ -5,11 +5,14 @@ using UnityEngine;
 public class MysteryShip : Invader
 {
     public float baseSpeed = 3f;
-    public int score = 100;
+    public override int score
+    {
+        get { return 100; }
+        set { /* Optionally implement a setter if needed */ }
+    }
 
     private Vector2 leftDestination;
     private Vector2 rightDestination;
-    private int direction = -1;
     private Vector3 _direction = Vector2.right;
     public Projectile missilePrefab;
     public float missileAttackRate = 0.7f;
@@ -32,7 +35,7 @@ public class MysteryShip : Invader
         leftDestination = new Vector2(leftEdge.x - 1f, transform.position.y);
         rightDestination = new Vector2(rightEdge.x + 1f, transform.position.y);
     }
-
+    
     private void Update()
     {
         // Move the object
@@ -61,12 +64,11 @@ public class MysteryShip : Invader
             hasAnimated = true;
         }
     }
-    
+
     private void OnEnable()
     {
-        InvokeRepeating(nameof(MissileAttack), missileAttackRate, missileAttackRate);
+        InvokeRepeating(nameof(MissileAttack), this.missileAttackRate, this.missileAttackRate);
     }
-    
     private void OnDisable()
     {
         // Cancel the scheduled invocations when the GameObject becomes inactive
@@ -82,7 +84,7 @@ public class MysteryShip : Invader
         }
     }
     
-    private new void OnTriggerEnter2D(Collider2D other)
+    private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Laser"))
         {

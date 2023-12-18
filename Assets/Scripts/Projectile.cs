@@ -9,14 +9,8 @@ public class Projectile : MonoBehaviour
 {
     public Vector3 direction = Vector3.up;
     public float baseSpeed = 5f;
-
-    private new BoxCollider2D collider;
-
-    private void Awake()
-    {
-        collider = GetComponent<BoxCollider2D>();
-    }
-
+    public System.Action destroyed;
+    
     public void Update()
     {
         transform.position += baseSpeed * Time.deltaTime * direction;
@@ -25,11 +19,21 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D other)
     {
         Destroy(gameObject);
+        if (this.destroyed != null)
+        {
+            this.destroyed.Invoke();
+        }
+
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
         Destroy(gameObject);
+        if (this.destroyed != null)
+        {
+            this.destroyed.Invoke();
+        }
+
     }
     
 }

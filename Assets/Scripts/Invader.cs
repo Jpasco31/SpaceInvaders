@@ -8,7 +8,7 @@ public class Invader : MonoBehaviour
 {
     public Sprite[] animationSprites = new Sprite[0];
     public float animationTime = 1f;
-    public int score = 10;
+    public virtual int score { get; set; } = 10;
 
     private SpriteRenderer spriteRenderer;
     private int animationFrame;

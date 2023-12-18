@@ -24,6 +24,7 @@ public class Invaders : MonoBehaviour
     
     private bool gameStarted = false;
 
+    public Projectile powerUpRapidShot;
     private void Awake()
     {
         initialPosition = transform.position;
@@ -173,5 +174,19 @@ public class Invaders : MonoBehaviour
         }
 
         return count;
+    }
+    
+    public void SpawnPowerUp()
+    {
+        // Check if there are any invaders alive
+        if (GetAliveCount() > 0)
+        {
+            // Random chance to spawn a power-up based on the number of invaders alive
+            if (Random.value < (20.0f / (float)GetAliveCount()))
+            {
+                // Spawn the power-up prefab at the position of the Invaders object
+                Instantiate(powerUpRapidShot, transform.position, Quaternion.identity);
+            }
+        }
     }
 }
