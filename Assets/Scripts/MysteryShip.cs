@@ -22,7 +22,12 @@ public class MysteryShip : Invader
 
     private bool spawned;
 
-
+    private Vector3 initialPosition;
+    private void Awake()
+    {
+        initialPosition = transform.position;
+    }
+    
     private new void Start()
     {
         // Transform the viewport to world coordinates so we can set the mystery
@@ -72,6 +77,11 @@ public class MysteryShip : Invader
     {
         // Cancel the scheduled invocations when the GameObject becomes inactive
         CancelInvoke(nameof(MissileAttack));
+    }
+    
+    public void ResetMysteryShip()
+    {
+        transform.position = initialPosition;
     }
 
     

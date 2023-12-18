@@ -8,7 +8,7 @@ public class Player : MonoBehaviour
 {
     public float speed = 6f;
     public Projectile laserPrefab;
-    
+    Projectile laser;
     public bool _powerUpRapidShot;
     private int _rapidShotBulletCount = 0;
     private int _maxRapidShotBulletCount = 10;
@@ -64,16 +64,17 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
+        
         if (!_laserActive && !_powerUpRapidShot)
         {
-            Projectile laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
+            laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
             laser.destroyed += LaserDestroyed;
             _laserActive = true;
             _rapidShotBulletCount++;
         }
         else if (_powerUpRapidShot)
         {
-            Projectile laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
+            laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
             _rapidShotBulletCount++;
         }
     }
@@ -85,10 +86,11 @@ public class Player : MonoBehaviour
      
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Missile") ||
-            other.gameObject.layer == LayerMask.NameToLayer("Invader"))
-        {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Missile")) {
             GameManager.Instance.OnPlayerKilled(this);
+        } else if (other.gameObject.layer == LayerMask.NameToLayer("Invader"))
+        {
+            GameManager.Instance.OnBoundaryReached();
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("PowerUpRapidShot"))
         {

@@ -18,7 +18,7 @@ public class Invaders : MonoBehaviour
     public Projectile missilePrefab;
     public float missileSpawnRate = 1f;
     
-    private bool gameStarted = false;
+    private bool gameStarted;
 
     public Projectile powerUpRapidShot;
     private void Awake()
@@ -55,8 +55,10 @@ public class Invaders : MonoBehaviour
 
                 // Calculate and set the position of the invader in the row
                 Vector3 position = rowPosition;
-                position.x += 2f * j;
+                position.x += 2.5f * j;
                 invader.transform.localPosition = position;
+                
+                invader.gameObject.layer = LayerMask.NameToLayer("Invader");
             }
         }
     }
@@ -99,7 +101,7 @@ public class Invaders : MonoBehaviour
         int totalCount = rows * columns;
         int amountAlive = GetAliveCount();
         int amountKilled = totalCount - amountAlive;
-        float percentKilled = (float)amountKilled / (float)totalCount;
+        float percentKilled = amountKilled / (float)totalCount;
 
 
         // Evaluate the speed of the invaders based on how many have been killed
@@ -143,7 +145,7 @@ public class Invaders : MonoBehaviour
 
         // Move the entire grid of invaders down a row
         Vector3 position = transform.position;
-        position.y -= 1f;
+        position.y -= 1.5f;
         transform.position = position;
     }
     
@@ -178,11 +180,19 @@ public class Invaders : MonoBehaviour
         if (GetAliveCount() > 0)
         {
             // Random chance to spawn a power-up based on the number of invaders alive
-            if (Random.value < (20.0f / (float)GetAliveCount()))
+            if (Random.value < (3.0f / GetAliveCount()))
             {
                 // Spawn the power-up prefab at the position of the Invaders object
                 Instantiate(powerUpRapidShot, transform.position, Quaternion.identity);
             }
+        }
+    }
+    
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player") || other.gameObject.layer == LayerMask.NameToLayer("Boundary"))
+        {
+            GameManager.Instance.OnBoundaryReached();
         }
     }
 }

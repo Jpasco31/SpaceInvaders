@@ -73,7 +73,7 @@ public sealed class GameManager : MonoBehaviour
         }
 
         // Check for Enter key press to start the game
-        if (!gameStartUI.activeSelf && Input.GetKeyDown(KeyCode.Return))
+        if (!gameStarted && Input.GetKeyDown(KeyCode.Return))
         {
             StartGame();
         }
@@ -107,6 +107,7 @@ public sealed class GameManager : MonoBehaviour
         // Spawn the mystery ship only on the second round
         if (currentRound > 1)
         {
+            mysteryShip.ResetMysteryShip();
             mysteryShip.gameObject.SetActive(true);
         }
         else
@@ -172,8 +173,6 @@ public sealed class GameManager : MonoBehaviour
     public void OnInvaderKilled(Invader invader)
     {
         invader.gameObject.SetActive(false);
-        
-
         SetScore(score + invader.score);
         
         invaders.SpawnPowerUp(); // Call the SpawnPowerUp method when an invader is killed
@@ -190,8 +189,13 @@ public sealed class GameManager : MonoBehaviour
 
     public void OnBoundaryReached()
     {
+        player.gameObject.SetActive(false);
+        invaders.gameObject.SetActive(false);
         SetLives(0);
-        GameOver();
+        if (lives == 0)
+        {
+            GameOver();
+        }
     }
     
     public void RestartGame()
