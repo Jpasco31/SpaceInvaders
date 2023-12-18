@@ -1,20 +1,18 @@
 using UnityEngine;
 
 
-public class Bullet_Powerup : MonoBehaviour
+public class Bullet_Powerup : Projectile
 {
-    public Vector3 direction;
-    public float speed;
-    public System.Action destroyed;
-
-    private void Update()
+    public void Update()
     {
-        this.transform.position += this.direction * this.speed * Time.deltaTime;
+        base.Update();
     }
 
-//    private void OnTriggerEnter2D(Collider2D other)
- //   {
- //       this.destroyed.Invoke();
- //       Destroy(this.gameObject);
- //   }
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
+        {
+            Destroy(gameObject);
+        }
+    }
 }

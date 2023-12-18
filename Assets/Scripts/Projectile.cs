@@ -9,7 +9,7 @@ public class Projectile : MonoBehaviour
     public float baseSpeed;
     public System.Action destroyed;
 
-    private void Update()
+    public void Update()
     {
         this.transform.position += this.direction * (this.baseSpeed * Time.deltaTime);
     }
