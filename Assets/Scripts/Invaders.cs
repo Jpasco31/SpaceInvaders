@@ -12,6 +12,7 @@ public class Invaders : MonoBehaviour
     public int columns = 11;
     public AnimationCurve baseSpeed;
     public Projectile missilePrefab;
+    public Bullet_Powerup bulletPowerUpPrefab;
     public float missileAttackRate = 1.0f;
     public int amountKilled { get; private set; }
     public int amountAlive => this.totalInvaders - this.amountKilled;
@@ -19,6 +20,8 @@ public class Invaders : MonoBehaviour
     public float percentKilled => (float) this.amountKilled / (float) this.totalInvaders;
     
     private Vector3 _direction = Vector2.right;
+
+    private bool _bulletPowerUpActive;
     private void Awake()
     {
         for (int row = 0; row < this.rows; row++)
@@ -104,6 +107,20 @@ public class Invaders : MonoBehaviour
         if (this.amountKilled >= this.totalInvaders)
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); //change this when adding scoring
+        }
+
+        foreach (Transform invader in this.transform)
+        {
+            if (!invader.gameObject.activeInHierarchy)
+            {
+                continue;
+            }
+
+            if (Random.value < (1.0f / (float)this.amountAlive))
+            {
+                Instantiate(this.bulletPowerUpPrefab, invader.position, Quaternion.identity);
+                break;
+            }
         }
     }
 }

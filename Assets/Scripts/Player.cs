@@ -10,6 +10,8 @@ public class Player : MonoBehaviour
     public float baseSpeed = 5.5f;
     public Projectile bulletPrefab;
     private bool _bulletActive;
+    private bool _bulletPowerUpActive;
+
 
     private void Update()
     {
@@ -49,5 +51,10 @@ public class Player : MonoBehaviour
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name); //change this when adding scoring
         }
+    }
+
+    private void getBulletPowerUp()
+    {
+
     }
 }
