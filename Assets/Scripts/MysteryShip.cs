@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider2D))]
 public class MysteryShip : Invader
 {
-    public float baseSpeed = 3f;
+    public float baseSpeed = 2f;
     public override int score
     {
         get { return 100; }

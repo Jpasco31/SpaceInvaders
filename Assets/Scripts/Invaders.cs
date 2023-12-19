@@ -179,8 +179,8 @@ public class Invaders : MonoBehaviour
         // Check if there are any invaders alive
         if (GetAliveCount() > 0)
         {
-            // Random chance to spawn a power-up based on the number of invaders alive
-            if (Random.value < (3.0f / GetAliveCount()))
+            // Adjust the threshold for a lower chance to spawn a power-up 
+            if (Random.value < 0.15f) // Adjust the value (0.2f for 20% chance)
             {
                 // Spawn the power-up prefab at the position of the Invaders object
                 Instantiate(powerUpRapidShot, transform.position, Quaternion.identity);

@@ -11,7 +11,7 @@ public class Player : MonoBehaviour
     Projectile laser;
     public bool _powerUpRapidShot;
     private int _rapidShotBulletCount = 0;
-    private int _maxRapidShotBulletCount = 10;
+    private float _rapidShotDuration = 3f;
     private bool _laserActive;
 
     private void Update()
@@ -64,20 +64,18 @@ public class Player : MonoBehaviour
 
     private void FireLaser()
     {
-        
         if (!_laserActive && !_powerUpRapidShot)
         {
             laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
             laser.destroyed += LaserDestroyed;
             _laserActive = true;
-            _rapidShotBulletCount++;
         }
         else if (_powerUpRapidShot)
         {
             laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
-            _rapidShotBulletCount++;
         }
     }
+
     
     private void LaserDestroyed()
     {
@@ -86,27 +84,24 @@ public class Player : MonoBehaviour
      
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject.layer == LayerMask.NameToLayer("Missile")) {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Missile"))
+        {
             GameManager.Instance.OnPlayerKilled(this);
-        } else if (other.gameObject.layer == LayerMask.NameToLayer("Invader"))
+        }
+        else if (other.gameObject.layer == LayerMask.NameToLayer("Invader"))
         {
             GameManager.Instance.OnBoundaryReached();
         }
         else if (other.gameObject.layer == LayerMask.NameToLayer("PowerUpRapidShot"))
         {
             _powerUpRapidShot = true;
-            StartCoroutine(RapidShotCounter());
+            StartCoroutine(RapidShotTimer());
         }
     }
     
-    private IEnumerator RapidShotCounter()
+    private IEnumerator RapidShotTimer()
     {
-        while (_rapidShotBulletCount < _maxRapidShotBulletCount)
-        {
-            yield return null;
-        }
-
+        yield return new WaitForSeconds(_rapidShotDuration);
         _powerUpRapidShot = false;
-        _rapidShotBulletCount = 0;
     }
 }
