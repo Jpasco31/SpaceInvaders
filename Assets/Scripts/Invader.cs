@@ -39,7 +39,8 @@ public class Invader : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Laser")) {
             GameManager.Instance.OnInvaderKilled(this);
-        } else if (other.gameObject.layer == LayerMask.NameToLayer("Player") || other.gameObject.layer == LayerMask.NameToLayer("Boundary"))
+        } 
+        if (other.gameObject.layer == LayerMask.NameToLayer("Player") || other.gameObject.layer == LayerMask.NameToLayer("Boundary"))
         {
             GameManager.Instance.OnBoundaryReached();
         }

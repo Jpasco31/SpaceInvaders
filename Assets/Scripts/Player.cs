@@ -88,11 +88,13 @@ public class Player : MonoBehaviour
         {
             GameManager.Instance.OnPlayerKilled(this);
         }
-        else if (other.gameObject.layer == LayerMask.NameToLayer("Invader"))
+        
+        if (other.gameObject.layer == LayerMask.NameToLayer("Invader"))
         {
             GameManager.Instance.OnBoundaryReached();
         }
-        else if (other.gameObject.layer == LayerMask.NameToLayer("PowerUpRapidShot"))
+        
+        if (other.gameObject.layer == LayerMask.NameToLayer("PowerUpRapidShot"))
         {
             _powerUpRapidShot = true;
             StartCoroutine(RapidShotTimer());
