@@ -17,7 +17,7 @@ public class Invaders : MonoBehaviour
     [Header("Missiles")]
     public Projectile missilePrefab;
     public float missileSpawnRate = 1f;
-    
+    [SerializeField] private AudioSource missileEffect;
     private bool gameStarted;
 
     public Projectile powerUpRapidShot;
@@ -89,6 +89,7 @@ public class Invaders : MonoBehaviour
             // alive (the more invaders alive the lower the chance)
             if (Random.value < (1f / amountAlive))
             {
+                missileEffect.Play();
                 Instantiate(missilePrefab, invader.position, Quaternion.identity);
                 break;
             }
@@ -159,6 +160,13 @@ public class Invaders : MonoBehaviour
             invader.gameObject.SetActive(true);
         }
     }
+    
+    public void DeactivateAll()
+    {
+        foreach (Transform invader in transform) {
+            invader.gameObject.SetActive(false);
+        }
+    }
 
     public int GetAliveCount()
     {
@@ -180,7 +188,7 @@ public class Invaders : MonoBehaviour
         if (GetAliveCount() > 0)
         {
             // Adjust the threshold for a lower chance to spawn a power-up 
-            if (Random.value < 0.15f) // Adjust the value (0.2f for 20% chance)
+            if (Random.value < 0.12f) // Adjust the value (0.2f for 20% chance)
             {
                 // Spawn the power-up prefab at the position of the Invaders object
                 Instantiate(powerUpRapidShot, transform.position, Quaternion.identity);

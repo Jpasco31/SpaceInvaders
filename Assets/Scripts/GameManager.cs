@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public sealed class GameManager : MonoBehaviour
@@ -12,8 +13,11 @@ public sealed class GameManager : MonoBehaviour
     [SerializeField] private Text finalScoreText;
     
     private Player player;
+    [SerializeField] private Player playerPrefab;
     private Invaders invaders;
+    [SerializeField] private MysteryShip mysteryShipPrefab;
     private MysteryShip mysteryShip;
+
     private int currentRound;
     public bool gameStarted;
     
@@ -23,6 +27,13 @@ public sealed class GameManager : MonoBehaviour
     public int Score => score;
     public int Lives => lives;
     
+    [SerializeField] private AudioSource playerDeadEffect;
+    [SerializeField] private AudioSource invaderDeadEffect;
+    [SerializeField] private AudioSource mysteryShipDeadEffect;
+    [SerializeField] private AudioSource boundaryReachedEffect;
+    
+    [SerializeField] private AudioSource startEffect;
+    [SerializeField] private AudioSource restartEffect;
     private void Awake()
     {
         if (Instance != null) {
@@ -37,19 +48,20 @@ public sealed class GameManager : MonoBehaviour
   
     private void Start()
     {
-        player = FindObjectOfType<Player>();
+        player = Instantiate(playerPrefab, Vector3.zero, Quaternion.identity);
+        mysteryShip = Instantiate(mysteryShipPrefab, Vector3.zero, Quaternion.identity);
         invaders = FindObjectOfType<Invaders>();
-        mysteryShip = FindObjectOfType<MysteryShip>();
+        gameStarted = false;
         // Show the game start UI initially
         gameStartUI.SetActive(true);
         gameOverUI.SetActive(false);
+        mysteryShip.gameObject.SetActive(false);
+        
         
         // You may want to hide other UI elements here if needed
         finalScoreText.gameObject.SetActive(false);
         livesText.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
-        gameStarted = false;
-        mysteryShip.gameObject.SetActive(false);
     }
     
     // Add a method to start the game
@@ -61,20 +73,18 @@ public sealed class GameManager : MonoBehaviour
         livesText.gameObject.SetActive(true);
         scoreText.gameObject.SetActive(true);
         gameStarted = true;
-        invaders.StartInvaders();
         NewGame();
     }
 
     private void Update()
     {
-        if (lives <= 0 && Input.GetKeyDown(KeyCode.Return))
+        if (lives <= 0 && Input.GetKeyDown(KeyCode.Return) && gameStarted)
         {
-            RestartGame();
-        }
-
-        // Check for Enter key press to start the game
-        if (!gameStarted && Input.GetKeyDown(KeyCode.Return))
+            restartEffect.Play();
+            Start();
+        } else if (!gameStarted && Input.GetKeyDown(KeyCode.Return))
         {
+            startEffect.Play();
             StartGame();
         }
     }
@@ -89,31 +99,31 @@ public sealed class GameManager : MonoBehaviour
         SetScore(0);
         SetLives(3);
         currentRound = 0;
-        NewRound();
+        invaders.ResetInvaders();
+        invaders.StartInvaders();
     }
 
     private void NewRound()
     {
         currentRound++;
         invaders.ResetInvaders();
-        invaders.gameObject.SetActive(true);
+        
+        Projectile[] projectiles = FindObjectsOfType<Projectile>();
+        foreach (Projectile projectile in projectiles)
+        {
+            Destroy(projectile.gameObject); 
+        }
+        
         Respawn();
 
-        if (currentRound > 1)
+        if (currentRound + 1 > 1)
         {
+            mysteryShip.ResetMysteryShipPosition();
             SetScore(score + 200);
-        }
-
-        // Spawn the mystery ship only on the second round
-        if (currentRound > 1)
-        {
-            mysteryShip.ResetMysteryShip();
             mysteryShip.gameObject.SetActive(true);
         }
-        else
-        {
-            mysteryShip.gameObject.SetActive(false);
-        }
+            
+            
     }
 
     private void Respawn()
@@ -126,15 +136,16 @@ public sealed class GameManager : MonoBehaviour
 
     private void GameOver()
     {
+        finalScoreText.gameObject.SetActive(true);
         finalScoreText.text = "SCORE\n" + score.ToString().PadLeft(4, '0');
         livesText.gameObject.SetActive(false);
         scoreText.gameObject.SetActive(false);
         gameOverUI.SetActive(true);
-        finalScoreText.gameObject.SetActive(true);
-        invaders.gameObject.SetActive(false);
-        mysteryShip.gameObject.SetActive(false);
-        gameStarted = false;
-        
+        Destroy(player.gameObject);
+        if (mysteryShip != null)
+        {
+            Destroy(mysteryShip.gameObject);
+        }
     
         // Deactivate all active missile prefabs in the scene
         Projectile[] projectiles = FindObjectsOfType<Projectile>();
@@ -142,7 +153,8 @@ public sealed class GameManager : MonoBehaviour
         {
             Destroy(projectile.gameObject); 
         }
-        
+
+        invaders.DeactivateAll();
     }
 
     private void SetScore(int score)
@@ -159,6 +171,7 @@ public sealed class GameManager : MonoBehaviour
     
     public void OnPlayerKilled(Player player)
     {
+        playerDeadEffect.Play();
         SetLives(lives - 1);
         player._powerUpRapidShot = false;
         player.gameObject.SetActive(false);
@@ -172,6 +185,7 @@ public sealed class GameManager : MonoBehaviour
 
     public void OnInvaderKilled(Invader invader)
     {
+        invaderDeadEffect.Play();
         invader.gameObject.SetActive(false);
         SetScore(score + invader.score);
         
@@ -184,23 +198,21 @@ public sealed class GameManager : MonoBehaviour
 
     public void OnMysteryShipKilled(MysteryShip mysteryShip)
     {
+        mysteryShipDeadEffect.Play();
         SetScore(score + mysteryShip.score);
+        this.mysteryShip.gameObject.SetActive(false);
+        mysteryShip.AnimateSprite();
+        mysteryShip.hitCount = 0;
     }
 
     public void OnBoundaryReached()
     {
+        boundaryReachedEffect.Play();
         player.gameObject.SetActive(false);
-        invaders.gameObject.SetActive(false);
         SetLives(0);
         if (lives == 0)
         {
             GameOver();
         }
-    }
-    
-    public void RestartGame()
-    {
-        // Implement any additional restart logic here
-        StartGame();
     }
 }

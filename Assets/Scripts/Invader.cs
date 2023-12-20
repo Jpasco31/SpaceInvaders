@@ -22,7 +22,7 @@ public class Invader : MonoBehaviour
 
     public void AnimateSprite()
     {
-        if (this != null)
+        if (this != null )
         {
             animationFrame++;
 
@@ -30,7 +30,7 @@ public class Invader : MonoBehaviour
             if (animationFrame >= animationSprites.Length) {
                 animationFrame = 0;
             }
-
+            
             spriteRenderer.sprite = animationSprites[animationFrame];
         }
     }

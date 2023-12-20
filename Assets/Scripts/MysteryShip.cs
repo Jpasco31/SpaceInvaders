@@ -16,20 +16,17 @@ public class MysteryShip : Invader
     public Projectile missilePrefab;
     public float missileAttackRate = 0.7f;
     
-    private int hitCount = 0;
+    public int hitCount = 0;
     private int maxHit = 2;
     private bool hasAnimated = false;
-
-    private bool spawned;
-
+    
+    [SerializeField] private AudioSource invaderDeadEffect;
     private Vector3 initialPosition;
-    private void Awake()
-    {
-        initialPosition = transform.position;
-    }
     
     private new void Start()
     {
+        Vector2 centerOffset = new Vector2(0.5f, 0f); // Center horizontally, 0f for the y-coordinate to be at the top
+        Vector3 topCenterPosition = new Vector3(centerOffset.x, Camera.main.ViewportToWorldPoint(Vector3.one).y, 0f);
         // Transform the viewport to world coordinates so we can set the mystery
         // ship's destination points
         Vector3 leftEdge = Camera.main.ViewportToWorldPoint(Vector3.zero);
@@ -38,6 +35,12 @@ public class MysteryShip : Invader
         // Offset each destination by 1 unit so the ship is fully out of sight
         leftDestination = new Vector2(leftEdge.x - 1f, transform.position.y);
         rightDestination = new Vector2(rightEdge.x + 1f, transform.position.y);
+
+        // Set the initial position of the mystery ship slightly lower than the top middle
+        float yOffset = 1.3f; // Adjust this value to your preference
+        Vector3 topMiddlePosition = new Vector3((leftEdge.x + rightEdge.x) / 2f, topCenterPosition.y - yOffset, 0f);
+        transform.position = topMiddlePosition;
+        initialPosition = transform.position;
     }
     
     private void Update()
@@ -62,13 +65,14 @@ public class MysteryShip : Invader
             _direction = Vector3.right;
         }
         
-        if (hitCount == 1 && !hasAnimated)
+        if (hitCount == 1 && !hasAnimated && this != null)
         {
-            base.AnimateSprite();
+            AnimateSprite();
             hasAnimated = true;
         }
     }
 
+    
     private void OnEnable()
     {
         InvokeRepeating(nameof(MissileAttack), this.missileAttackRate, this.missileAttackRate);
@@ -79,11 +83,6 @@ public class MysteryShip : Invader
         CancelInvoke(nameof(MissileAttack));
     }
     
-    public void ResetMysteryShip()
-    {
-        transform.position = initialPosition;
-    }
-
     
     private void MissileAttack()
     {
@@ -93,17 +92,21 @@ public class MysteryShip : Invader
         }
     }
     
+    public void ResetMysteryShipPosition()
+    {
+        transform.position = initialPosition;
+    }
+    
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Laser"))
         {
             // Increment the hit count
             hitCount++;
-
+            invaderDeadEffect.Play();
             // Check if the required number of hits is reached
             if (hitCount >= maxHit)
             {
-                gameObject.SetActive(false);
                 GameManager.Instance.OnMysteryShipKilled(this);
             }
         }

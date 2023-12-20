@@ -10,9 +10,23 @@ public class Player : MonoBehaviour
     public Projectile laserPrefab;
     Projectile laser;
     public bool _powerUpRapidShot;
-    private float _rapidShotDuration = 3f;
+    private float _rapidShotDuration = 2.0f;
     private bool _laserActive;
+    [SerializeField] private AudioSource shootEffect;
+    [SerializeField] private AudioSource powerUpEffect;
+    
+    private void Start()
+    {
+        // Transform the viewport to world coordinates so we can set the player's initial position
+        Vector3 leftEdge = Camera.main.ViewportToWorldPoint(Vector3.zero);
+        Vector3 rightEdge = Camera.main.ViewportToWorldPoint(Vector3.right);
 
+        // Set the initial position of the player at the bottom middle
+        float yOffset = 1.3f; // Adjust this value to your preference
+        Vector3 bottomMiddlePosition = new Vector3((leftEdge.x + rightEdge.x) / 2f, leftEdge.y + yOffset, 0f);
+        transform.position = bottomMiddlePosition;
+    }
+    
     private void Update()
     {
         // Check if the player is alive before handling input
@@ -67,10 +81,12 @@ public class Player : MonoBehaviour
         {
             laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
             laser.destroyed += LaserDestroyed;
+            shootEffect.Play();
             _laserActive = true;
         }
         else if (_powerUpRapidShot)
         {
+            shootEffect.Play();
             laser = Instantiate(laserPrefab, transform.position, Quaternion.identity);
         }
     }
@@ -95,6 +111,7 @@ public class Player : MonoBehaviour
         
         if (other.gameObject.layer == LayerMask.NameToLayer("PowerUpRapidShot"))
         {
+            powerUpEffect.Play();
             _powerUpRapidShot = true;
             StartCoroutine(RapidShotTimer());
         }
