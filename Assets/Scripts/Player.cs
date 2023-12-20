@@ -10,7 +10,6 @@ public class Player : MonoBehaviour
     public Projectile laserPrefab;
     Projectile laser;
     public bool _powerUpRapidShot;
-    private int _rapidShotBulletCount = 0;
     private float _rapidShotDuration = 3f;
     private bool _laserActive;
 
