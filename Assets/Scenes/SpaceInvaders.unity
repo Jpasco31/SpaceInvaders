@@ -1317,7 +1317,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "Space Bar to shoot \nW, A , S ,D for movement"
+  m_Text: "Space Bar to shoot \nArrow keys for movement"
 --- !u!222 &1515841713
 CanvasRenderer:
   m_ObjectHideFlags: 0
