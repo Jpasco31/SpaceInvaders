@@ -286,6 +286,7 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   missilePrefab: {fileID: 169110580868875701, guid: 9a8ae2d09430c44418d91958f6bf33a3, type: 3}
+  bulletPowerUpPrefab: {fileID: 3464790834741556726, guid: d42bf0f3aa4c9b14785e447db5e0aebc, type: 3}
   missileAttackRate: 1
 --- !u!4 &735031132
 Transform:
